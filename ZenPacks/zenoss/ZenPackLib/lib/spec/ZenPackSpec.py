@@ -563,7 +563,7 @@ class ZenPackSpec(Spec):
             'packZProperties': packZProperties,
             'packZProperties_data': packZProperties_data,
             }
-
+        attributes['zenpack_spec'] = self
         attributes['device_classes'] = self.device_classes
         attributes['event_classes'] = self.event_classes
         attributes['process_class_organizers'] = self.process_class_organizers
