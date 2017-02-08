@@ -19,7 +19,7 @@ class ClassPropertySpecParams(SpecParams, ClassPropertySpec):
         self.name = name
 
     @classmethod
-    def fromObject(cls, id, ob):
+    def fromObject(cls, ob, id):
         """Generate SpecParams from example object and list of properties"""
         # self = super(ClassPropertySpecParams, cls).fromObject(ob)
         self = object.__new__(cls)
@@ -29,9 +29,9 @@ class ClassPropertySpecParams(SpecParams, ClassPropertySpec):
 
         self.name = id
 
-        proto = ob.__class__(ob.id)
+        proto = self.get_prototype(ob)
 
-        self.default = getattr(proto, id, None)
+        self.default = getattr(proto, id, self.get_default())
 
         entry = next((p for p in proto._properties if p['id'] == id), {})
 

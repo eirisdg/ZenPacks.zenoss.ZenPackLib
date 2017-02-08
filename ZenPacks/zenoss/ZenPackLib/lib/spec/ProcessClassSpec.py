@@ -91,7 +91,7 @@ class ProcessClassSpec(Spec):
         self.modeler_lock = modeler_lock
         self.send_event_when_blocked = send_event_when_blocked
 
-    def create(self, dmd, porg):
+    def create(self, dmd, porg, addToZenPack=True):
         # get existing process class
         process_class = None
         for pc in porg.osProcessClasses():
@@ -154,3 +154,5 @@ class ProcessClassSpec(Spec):
         # Flag this as a ZPL managed object, that is, one that should not be
         # exported to objects.xml  (contained objects will also be excluded)
         process_class.zpl_managed = True
+
+        return self.return_or_add_to_zenpack(process_class, self.zenpack_spec.name, addToZenPack)

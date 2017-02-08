@@ -44,15 +44,10 @@ class EventClassSpec(Spec):
         self.mappings = self.specs_from_param(
             EventClassMappingSpec, 'mappings', mappings, zplog=self.LOG)
 
-    def instantiate(self, dmd, addToZenPack=True):
-        bCreated = False
-        try:
-            ecObject = dmd.Events.getOrganizer(self.path)
-            bCreated = getattr(ecObject, 'zpl_managed', False)
-        except KeyError:
-            dmd.Events.createOrganizer(self.path)
-            ecObject = dmd.Events.getOrganizer(self.path)
-            bCreated = True
+    def create(self, dmd, addToZenPack=True):
+
+        ecObject, bCreated = self.get_or_create_organizer(dmd.Events, self.path)
+
         if self.description != '':
             if not ecObject.description == self.description:
                 self.LOG.debug('Description of Event Class {} has changed from'
@@ -60,6 +55,7 @@ class EventClassSpec(Spec):
                                                   ecObject.description,
                                                   self.description))
                 ecObject.description = self.description
+
         if self.transform != '':
             if not ecObject.transform == self.transform:
                 self.LOG.debug('Transform for Event Class {} has changed from'
@@ -67,16 +63,12 @@ class EventClassSpec(Spec):
                                                        ecObject.transform,
                                                        self.transform))
                 ecObject.transform = self.transform
+
         # Flag this as a ZPL managed object, that is, one that should not be
         # exported to objects.xml  (contained objects will also be excluded)
         ecObject.zpl_managed = bCreated
         for mapping_id, mapping_spec in self.mappings.items():
             mapping_spec.create(ecObject)
 
-        # set to false to facilitate testing without ZP installation
-        if addToZenPack:
-            zenpack_name = self.zenpack_spec.name
-            ecObject.addToZenPack(pack=zenpack_name)
+        return self.return_or_add_to_zenpack(ecObject, self.zenpack_spec.name, addToZenPack)
 
-        if not addToZenPack:
-            return ecObject

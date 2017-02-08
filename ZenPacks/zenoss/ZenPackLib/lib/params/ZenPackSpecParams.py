@@ -18,7 +18,7 @@ from .DeviceClassSpecParams import DeviceClassSpecParams
 from .EventClassSpecParams import EventClassSpecParams
 from .ProcessClassOrganizerSpecParams import ProcessClassOrganizerSpecParams
 from ..spec.ZenPackSpec import ZenPackSpec
-
+from collections import OrderedDict
 
 class ZenPackSpecParams(SpecParams, ZenPackSpec):
     def __init__(self,
@@ -117,22 +117,18 @@ class ZenPackSpecParams(SpecParams, ZenPackSpec):
         # device classes/templates
         if all or device_classes:
             d_classes = {x.deviceClass() for x in ob.packables() if x.meta_type == 'RRDTemplate'}
-            self.device_classes = {x.getOrganizerName(): DeviceClassSpecParams.fromObject(x, ob) for x in d_classes}
+            self.device_classes = DeviceClassSpecParams.get_ordered_params(d_classes, 'getOrganizerName', is_method=True, zenpack=ob)
 
         # event classes
         if all or event_classes:
-            e_classes = {x for x in ob.packables() if x.meta_type == 'EventClass'}
-            self.event_classes = {x.getOrganizerName(): EventClassSpecParams.fromObject(x, ob, zp) for x in e_classes}
-#             for e in e_classes:
-#                 for sub_e in e.getSubOrganizers():
-#                     self.event_classes[sub_e.getOrganizerName()] = EventClassSpecParams.fromObject(sub_e, ob, zp, remove=False)
+            e_classes = list({x for x in ob.packables() if x.meta_type == 'EventClass'})
+            self.event_classes = EventClassSpecParams.get_ordered_params(e_classes, 'getOrganizerName', is_method=True, zenpack=ob)
 
         # process class organizers
         if all or process_classes:
             p_classes = {x for x in ob.packables() if x.meta_type == 'OSProcessOrganizer'}
-            self.process_classes = {x.getOrganizerName(): ProcessClassOrganizerSpecParams.fromObject(x, ob, zp) for x in p_classes}
-#             for p in p_classes:
-#                 for sub_p in p.getSubOrganizers():
-#                     self.process_classes[sub_p.getOrganizerName()] = ProcessClassOrganizerSpecParams.fromObject(sub_p, ob, zp, remove=False)
+            self.process_classes = ProcessClassOrganizerSpecParams.get_ordered_params(p_classes, 'getOrganizerName', is_method=True, zenpack=ob)
 
         return self
+
+

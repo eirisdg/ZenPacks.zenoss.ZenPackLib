@@ -12,6 +12,8 @@ from ..spec.Spec import Spec
 from ..helpers.ZenPackLibLog import DEFAULTLOG
 from ..base.ClassProperty import ClassProperty
 import copy
+import operator
+
 
 class SpecParams(object):
     """SpecParams"""
@@ -79,7 +81,7 @@ class SpecParams(object):
         # Weed out any values that are the same as they would by by default.
         # We do this by instantiating a "blank" object and comparing
         # to it.
-        proto = ob.__class__(ob.id)
+        proto = self.get_prototype(ob)
 
         # these have to be handled separately
         ignore = ['extra_params', 'aliases']
@@ -103,7 +105,34 @@ class SpecParams(object):
 
         return self
 
+
     @classmethod
     def fromClass(cls, klass, prop_map={}):
         """Generate SpecParams from given class"""
-        return cls.fromObject(klass('ob'), prop_map)
+        return cls.fromObject(cls.get_instance(klass), prop_map)
+
+    @classmethod
+    def get_ordered_params(cls, objects, keyattr, is_method=False, **kwargs):
+        """return a sorted dictionary of specparams"""
+        objects = cls.get_sorted_objects(objects, keyattr, is_method)
+        if is_method:
+            data = OrderedDict([(getattr(x, keyattr)(), cls.fromObject(x, **kwargs)) for x in objects])
+        else:
+            data = OrderedDict([(getattr(x, keyattr), cls.fromObject(x, **kwargs)) for x in objects])
+        return data
+
+    @classmethod
+    def get_prototype(cls, ob):
+        try:
+            proto = ob.__class__(ob.id)
+        except TypeError:
+            proto = ob.__class__()
+        return proto
+
+    @classmethod
+    def get_instance(cls, klass):
+        try:
+            ob = klass('ob')
+        except TypeError:
+            ob = klass()
+        return ob

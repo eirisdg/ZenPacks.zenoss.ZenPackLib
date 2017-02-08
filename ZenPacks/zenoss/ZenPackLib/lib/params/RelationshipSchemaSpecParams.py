@@ -82,4 +82,4 @@ class RelationshipSchemaSpecParams(SpecParams, RelationshipSchemaSpec):
     @classmethod
     def fromClass(cls, klass, relname, zenpack='Unknown'):
         """Generate SpecParams from given class"""
-        return cls.fromObject(klass('ob'), relname, zenpack)
+        return cls.fromObject(cls.get_instance(klass), relname, zenpack)

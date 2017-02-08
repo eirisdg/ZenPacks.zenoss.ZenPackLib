@@ -121,7 +121,7 @@ class ClassSpecParams(SpecParams, ClassSpec):
         ignore = [x['id'] for x in ManagedEntity._properties] + cls.init_params.keys()
         props = [x for x in ob._properties if x['id'] not in ignore]
 
-        self.properties = {x['id']: ClassPropertySpecParams.fromObject(x['id'], ob) for x in props}
+        self.properties = {x['id']: ClassPropertySpecParams.fromObject(ob, x['id']) for x in props}
 
         ignore = [x[0] for x in BaseDevice._relations]
         rels = [x for x in ob._relations if x[0] not in ignore]
@@ -161,7 +161,7 @@ class ClassSpecParams(SpecParams, ClassSpec):
     @classmethod
     def fromClass(cls, klass, zenpack=None):
         """Generate SpecParams from given class"""
-        return cls.fromObject(klass('ob'), zenpack)
+        return cls.fromObject(cls.get_instance(klass), zenpack)
 
     @classmethod
     def find_proxy(cls, klass):

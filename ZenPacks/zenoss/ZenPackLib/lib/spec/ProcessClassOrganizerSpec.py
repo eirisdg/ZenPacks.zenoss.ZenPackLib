@@ -39,14 +39,7 @@ class ProcessClassOrganizerSpec(Spec):
 
     def create(self, dmd, addToZenPack=True):
         # get/create process class organizer
-        bCreated = False
-        try:
-            porg = dmd.Processes.getOrganizer(self.path)
-            bCreated = getattr(porg, 'zpl_managed', False)
-        except KeyError:
-            dmd.Processes.createOrganizer(self.path)
-            porg = dmd.Processes.getOrganizer(self.path)
-            bCreated = True
+        porg, bCreated = self.get_or_create_organizer(dmd.Processes, self.path)
 
         if porg.description != self.description:
             porg.description = self.description
@@ -56,10 +49,4 @@ class ProcessClassOrganizerSpec(Spec):
         for process_class_id, process_class_spec in self.process_classes.items():
             process_class_spec.create(dmd, porg)
 
-        # set to false to facilitate testing without ZP installation
-        if addToZenPack:
-            zenpack_name = self.zenpack_spec.name
-            porg.addToZenPack(pack=zenpack_name)
-
-        if not addToZenPack:
-            return porg
+        return self.return_or_add_to_zenpack(porg, self.zenpack_spec.name, addToZenPack)

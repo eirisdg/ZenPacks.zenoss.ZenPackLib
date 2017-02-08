@@ -39,11 +39,11 @@ class EventClassSpecParams(SpecParams, EventClassSpec):
 
         self.path = eventclass.getOrganizerName()
 
-        mappings = eventclass.instances()
+        mappings = self.get_sorted_objects(eventclass.instances(), 'id')
 
         if zenpack:
             mappings = [x for x in mappings if x in zenpack.packables()]
 
-        self.mappings = {x.id: EventClassMappingSpecParams.fromObject(x) for x in mappings}
+        self.mappings = EventClassMappingSpecParams.get_ordered_params(mappings, 'id')
 
         return self
