@@ -8,9 +8,17 @@
 ##############################################################################
 from .SpecParams import SpecParams
 from ..spec.RRDThresholdSpec import RRDThresholdSpec
+from Acquisition import aq_base
 
 
 class RRDThresholdSpecParams(SpecParams, RRDThresholdSpec):
     def __init__(self, template_spec, name, foo=None, **kwargs):
         SpecParams.__init__(self, **kwargs)
         self.name = name
+
+    @classmethod
+    def fromObject(cls, ob):
+        self = super(RRDThresholdSpecParams, cls).fromObject(ob)
+        ob = aq_base(ob)
+        self.type_ = ob.__class__.__name__
+        return self

@@ -22,19 +22,19 @@ class ProcessClassOrganizerSpecParams(SpecParams, ProcessClassOrganizerSpec):
             ProcessClassSpecParams, 'process_classes', process_classes)
 
     @classmethod
-    def fromObject(cls, processclass, zenpack=None):
+    def fromObject(cls, processclass, zenpack=None, remove=True):
         self = super(ProcessClassOrganizerSpecParams, cls).fromObject(processclass)
-
+        self.remove = remove
         processclass = aq_base(processclass)
 
         self.path = processclass.getOrganizerName()
 
-        organizers = processclass.osProcessClasses()
+        p_classes = processclass.osProcessClasses()
 
         if zenpack:
-            organizers = [x for x in organizers if x in zenpack.packables()]
+            p_classes = [x for x in p_classes if x in zenpack.packables()]
 
-        self.process_classes = {x.id: ProcessClassSpecParams.fromObject(x) for x in organizers}
+        self.process_classes = {x.id: ProcessClassSpecParams.fromObject(x) for x in p_classes}
 
         return self
 

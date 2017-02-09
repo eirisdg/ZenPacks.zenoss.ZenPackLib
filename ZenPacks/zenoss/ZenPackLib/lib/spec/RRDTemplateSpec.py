@@ -74,10 +74,13 @@ class RRDTemplateSpec(Spec):
         ds_dp_names = self.get_ds_dp_names()
         # check threshold references
         for th_name, th_spec in self.thresholds.items():
-            self.check_ds_dp_names(th_name,
+            try:
+                self.check_ds_dp_names(th_name,
                                    'Threshold',
                                    set(th_spec.dsnames),
                                    ds_dp_names)
+            except:
+                import pdb ; pdb.set_trace()
         # check graph point references
         for g_name, g_spec in self.graphs.items():
             for gp_name, gp_spec in g_spec.graphpoints.items():

@@ -59,7 +59,9 @@ class ZenPackSpecParams(SpecParams, ZenPackSpec):
                    class_relationships=False,
                    device_classes=False,
                    event_classes=False,
-                   process_classes=False):
+                   process_classes=False,
+                   templates_only=False):
+
         self = super(ZenPackSpecParams, cls).fromObject(ob)
 
         ob = aq_base(ob)
@@ -117,17 +119,24 @@ class ZenPackSpecParams(SpecParams, ZenPackSpec):
         # device classes/templates
         if all or device_classes:
             d_classes = {x.deviceClass() for x in ob.packables() if x.meta_type == 'RRDTemplate'}
-            self.device_classes = DeviceClassSpecParams.get_ordered_params(d_classes, 'getOrganizerName', is_method=True, zenpack=ob)
+            self.device_classes = DeviceClassSpecParams.get_ordered_params(d_classes, 'getOrganizerName', is_method=True, zenpack=ob, templates_only=templates_only)
 
         # event classes
         if all or event_classes:
             e_classes = list({x for x in ob.packables() if x.meta_type == 'EventClass'})
+            e_inst_classes = list({x for x in ob.packables() if x.meta_type == 'EventClassInst'})
             self.event_classes = EventClassSpecParams.get_ordered_params(e_classes, 'getOrganizerName', is_method=True, zenpack=ob)
+
+            e_inst_classes = list({x.eventClass() for x in ob.packables() if x.meta_type == 'EventClassInst'})
+            self.event_classes.update(EventClassSpecParams.get_ordered_params(e_inst_classes, 'getOrganizerName', is_method=True, zenpack=ob, remove=False))
 
         # process class organizers
         if all or process_classes:
             p_classes = {x for x in ob.packables() if x.meta_type == 'OSProcessOrganizer'}
-            self.process_classes = ProcessClassOrganizerSpecParams.get_ordered_params(p_classes, 'getOrganizerName', is_method=True, zenpack=ob)
+            self.process_class_organizers = ProcessClassOrganizerSpecParams.get_ordered_params(p_classes, 'getOrganizerName', is_method=True, zenpack=ob)
+
+            p_inst_classes = list({x.osProcessOrganizer() for x in ob.packables() if x.meta_type == 'OSProcessClass'})
+            self.process_class_organizers.update(ProcessClassOrganizerSpecParams.get_ordered_params(p_inst_classes, 'getOrganizerName', is_method=True, zenpack=ob, remove=False))
 
         return self
 

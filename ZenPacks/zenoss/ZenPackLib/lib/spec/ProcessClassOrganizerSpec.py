@@ -47,6 +47,6 @@ class ProcessClassOrganizerSpec(Spec):
         # exported to objects.xml  (contained objects will also be excluded)
         porg.zpl_managed = bCreated
         for process_class_id, process_class_spec in self.process_classes.items():
-            process_class_spec.create(dmd, porg)
+            process_class_spec.create(dmd, porg, addToZenPack)
 
         return self.return_or_add_to_zenpack(porg, self.zenpack_spec.name, addToZenPack)

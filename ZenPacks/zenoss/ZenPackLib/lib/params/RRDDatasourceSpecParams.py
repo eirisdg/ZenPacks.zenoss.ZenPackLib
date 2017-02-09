@@ -22,9 +22,8 @@ class RRDDatasourceSpecParams(SpecParams, RRDDatasourceSpec):
     @classmethod
     def fromObject(cls, ob):
         self = super(RRDDatasourceSpecParams, cls).fromObject(ob)
-
         ob = aq_base(ob)
-
+        self.sourcetype = ob.sourcetype
         self.datapoints = {x.id: RRDDatapointSpecParams.fromObject(x) for x in ob.datapoints()}
 
         return self

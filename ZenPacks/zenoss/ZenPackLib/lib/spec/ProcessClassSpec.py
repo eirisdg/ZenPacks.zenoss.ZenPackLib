@@ -155,4 +155,4 @@ class ProcessClassSpec(Spec):
         # exported to objects.xml  (contained objects will also be excluded)
         process_class.zpl_managed = True
 
-        return self.return_or_add_to_zenpack(process_class, self.zenpack_spec.name, addToZenPack)
+        return self.return_or_add_to_zenpack(process_class, self.zenpack_spec.zenpack_spec.name, addToZenPack)
