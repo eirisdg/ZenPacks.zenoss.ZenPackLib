@@ -61,7 +61,7 @@ class ZenPackSpecParams(SpecParams, ZenPackSpec):
                    event_classes=False,
                    process_classes=False,
                    get_templates=True,
-                   get_zprops=False):
+                   get_zprops=True):
 
         self = super(ZenPackSpecParams, cls).fromObject(ob)
 

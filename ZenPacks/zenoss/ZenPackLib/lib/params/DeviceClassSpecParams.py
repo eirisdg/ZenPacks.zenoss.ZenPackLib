@@ -30,14 +30,14 @@ class DeviceClassSpecParams(SpecParams, DeviceClassSpec):
 
         self.path = deviceclass.getOrganizerName().lstrip('/')
 
-        # if this is set locally
-        if 'devtypes' in deviceclass.__dict__ and deviceclass in zenpack.packables():
-            if deviceclass.devtypes:
-                entry = deviceclass.devtypes[0]
-                self.description = entry[0]
-                self.protocol = entry[1]
-
         if get_zprops:
+            # if this is set locally
+            if 'devtypes' in deviceclass.__dict__ and deviceclass in zenpack.packables():
+                if deviceclass.devtypes:
+                    entry = deviceclass.devtypes[0]
+                    self.description = entry[0]
+                    self.protocol = entry[1]
+
             zprops = [x for x in deviceclass.zenPropertyIds(all=False) if deviceclass.isLocal(x)]
             self.zProperties = {x: getattr(deviceclass, x) for x in zprops}
 

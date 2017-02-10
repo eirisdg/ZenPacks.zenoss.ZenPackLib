@@ -483,20 +483,20 @@ class ZPLCommand(ZenScriptBase):
         self.connect()
         zp = self.dmd.ZenPackManager.packs._getOb(target, None)
         if zp:
-            zp_params = ZenPackSpecParams.fromObject(zp, all=False, device_classes=True, templates_only=True)
+            zp_params = ZenPackSpecParams.fromObject(zp, all=False, device_classes=True, get_templates=True, get_zprops=False)
         else:
             classes = self.get_organizers(self.dmd.Devices, target)
             if not classes:
                 self.parser.error('{} does not appear to be a valid ZenPack or Device Class path'.format(target))
             zp_params = ZenPackSpecParams('ZenPacks.zenoss.ZenPackLib')
-            zp_params.device_classes = {x.getOrganizerName(): DeviceClassSpecParams.fromObject(x, templates_only=True) for x in classes}
+            zp_params.device_classes = {x.getOrganizerName(): DeviceClassSpecParams.fromObject(x, get_templates=True, get_zprops=False) for x in classes}
         print yaml.dump(zp_params, Dumper=Dumper)
 
     def dump_device_classes(self, target):
         self.connect()
         zp = self.dmd.ZenPackManager.packs._getOb(target, None)
         if zp:
-            zp_params = ZenPackSpecParams.fromObject(zp, all=False, device_classes=True, get_templates=False, get_zprops=False)
+            zp_params = ZenPackSpecParams.fromObject(zp, all=False, device_classes=True, get_templates=True, get_zprops=True)
         else:
             classes = self.get_organizers(self.dmd.Devices, target)
             if not classes:
