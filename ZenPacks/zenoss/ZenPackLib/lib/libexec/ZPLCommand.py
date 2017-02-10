@@ -496,7 +496,7 @@ class ZPLCommand(ZenScriptBase):
         self.connect()
         zp = self.dmd.ZenPackManager.packs._getOb(target, None)
         if zp:
-            zp_params = ZenPackSpecParams.fromObject(zp, all=False, device_classes=True)
+            zp_params = ZenPackSpecParams.fromObject(zp, all=False, device_classes=True, get_templates=False, get_zprops=False)
         else:
             classes = self.get_organizers(self.dmd.Devices, target)
             if not classes:

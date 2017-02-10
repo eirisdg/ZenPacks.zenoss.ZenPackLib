@@ -34,8 +34,10 @@ class RRDTemplateSpecParams(SpecParams, RRDTemplateSpec):
 
         template = aq_base(template)
 
-        self.thresholds = {x.id: RRDThresholdSpecParams.fromObject(x) for x in template.thresholds()}
-        self.datasources = {x.id: RRDDatasourceSpecParams.fromObject(x) for x in template.datasources()}
-        self.graphs = {x.id: GraphDefinitionSpecParams.fromObject(x) for x in template.graphDefs()}
+        self.thresholds = RRDThresholdSpecParams.get_ordered_params(template.thresholds(), 'id', reorder=False)
+
+        self.datasources = RRDDatasourceSpecParams.get_ordered_params(template.datasources(), 'id', reorder=False)
+
+        self.graphs = GraphDefinitionSpecParams.get_ordered_params(template.graphDefs(), 'id', reorder=False)
 
         return self

@@ -23,27 +23,29 @@ class DeviceClassSpecParams(SpecParams, DeviceClassSpec):
             RRDTemplateSpecParams, 'templates', templates, zplog=self.LOG)
 
     @classmethod
-    def fromObject(cls, deviceclass, zenpack=None, templates_only=False):
+    def fromObject(cls, deviceclass, zenpack=None, get_templates=True, get_zprops=True):
         self = super(DeviceClassSpecParams, cls).fromObject(deviceclass)
 
         deviceclass = aq_base(deviceclass)
 
         self.path = deviceclass.getOrganizerName().lstrip('/')
-        if hasattr(deviceclass, 'devtypes'):
+
+        # if this is set locally
+        if 'devtypes' in deviceclass.__dict__ and deviceclass in zenpack.packables():
             if deviceclass.devtypes:
                 entry = deviceclass.devtypes[0]
                 self.description = entry[0]
                 self.protocol = entry[1]
 
-        if not templates_only:
+        if get_zprops:
             zprops = [x for x in deviceclass.zenPropertyIds(all=False) if deviceclass.isLocal(x)]
             self.zProperties = {x: getattr(deviceclass, x) for x in zprops}
 
-        templates = deviceclass.rrdTemplates()
+        if get_templates:
+            templates = deviceclass.rrdTemplates()
+            if zenpack:
+                templates = [x for x in templates if x in zenpack.packables()]
 
-        if zenpack:
-            templates = [x for x in templates if x in zenpack.packables()]
-
-        self.templates = {x.id: RRDTemplateSpecParams.fromObject(x) for x in templates}
+            self.templates = RRDTemplateSpecParams.get_ordered_params(templates, 'id', reorder=False)
 
         return self

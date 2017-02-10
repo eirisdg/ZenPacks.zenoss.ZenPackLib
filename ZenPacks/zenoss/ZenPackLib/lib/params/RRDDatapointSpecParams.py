@@ -8,6 +8,7 @@
 ##############################################################################
 import StringIO
 from Acquisition import aq_base
+from collections import OrderedDict
 from ..spec.RRDDatapointSpec import RRDDatapointSpec
 from .SpecParams import SpecParams
 
@@ -24,7 +25,8 @@ class RRDDatapointSpecParams(SpecParams, RRDDatapointSpec):
 
         datapoint = aq_base(datapoint)
         sample_dp = datapoint.__class__(datapoint.id)
-        self.aliases = {x.id: x.formula for x in datapoint.aliases()}
+
+        self.aliases = OrderedDict([(x.id, x.formula) for x in datapoint.aliases()])
 
         # Shorthand support.  The use of the shorthand field takes
         # over all other attributes.  So we can only use it when the rest of

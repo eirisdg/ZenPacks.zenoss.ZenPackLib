@@ -22,6 +22,7 @@ class GraphDefinitionSpecParams(SpecParams, GraphDefinitionSpec):
         self.graphpoints = self.specs_from_param(
             GraphPointSpecParams, 'graphpoints', graphpoints, zplog=self.LOG)
 
+
     @classmethod
     def fromObject(cls, ob):
         self = super(GraphDefinitionSpecParams, cls).fromObject(ob)
@@ -29,7 +30,8 @@ class GraphDefinitionSpecParams(SpecParams, GraphDefinitionSpec):
         ob = aq_base(ob)
 
         datapoint_graphpoints = [x for x in ob.graphPoints() if isinstance(x, DataPointGraphPoint)]
-        self.graphpoints = {x.id: GraphPointSpecParams.fromObject(x, ob) for x in datapoint_graphpoints}
+
+        self.graphpoints = GraphPointSpecParams.get_ordered_params(datapoint_graphpoints, 'id', reorder=False, graphdefinition=ob)
 
         comment_graphpoints = [x for x in ob.graphPoints() if isinstance(x, CommentGraphPoint)]
         if comment_graphpoints:

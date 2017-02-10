@@ -60,7 +60,8 @@ class ZenPackSpecParams(SpecParams, ZenPackSpec):
                    device_classes=False,
                    event_classes=False,
                    process_classes=False,
-                   templates_only=False):
+                   get_templates=True,
+                   get_zprops=False):
 
         self = super(ZenPackSpecParams, cls).fromObject(ob)
 
@@ -116,10 +117,21 @@ class ZenPackSpecParams(SpecParams, ZenPackSpec):
         if all or class_relationships:
             self.class_relationships.sort(key=lambda x: x.left_class)
 
-        # device classes/templates
+        self.device_classes = OrderedDict()
+
         if all or device_classes:
-            d_classes = {x.deviceClass() for x in ob.packables() if x.meta_type == 'RRDTemplate'}
-            self.device_classes = DeviceClassSpecParams.get_ordered_params(d_classes, 'getOrganizerName', is_method=True, zenpack=ob, templates_only=templates_only)
+            d_classes = {x for x in ob.packables() if x.meta_type == 'DeviceClass'}
+            t_classes = {x.deviceClass() for x in ob.packables() if x.meta_type == 'RRDTemplate'}
+            all_classes = d_classes.union(t_classes)
+            self.device_classes = DeviceClassSpecParams.get_ordered_params(all_classes, 'getOrganizerName', is_method=True, zenpack=ob, get_templates=get_templates, get_zprops=get_zprops)
+
+            # t_classes = {x.deviceClass() for x in ob.packables() if x.meta_type == 'RRDTemplate'}
+            # self.device_classes.update(DeviceClassSpecParams.get_ordered_params(t_classes, 'getOrganizerName', is_method=True, zenpack=ob, get_templates=templates, get_zprops=get_zprops))
+
+#         # device classes/templates
+#         if all or templates:
+#             d_classes = {x.deviceClass() for x in ob.packables() if x.meta_type == 'RRDTemplate'}
+#             self.device_classes.update(DeviceClassSpecParams.get_ordered_params(d_classes, 'getOrganizerName', is_method=True, zenpack=ob, get_templates=templates, get_zprops=get_zprops))
 
         # event classes
         if all or event_classes:

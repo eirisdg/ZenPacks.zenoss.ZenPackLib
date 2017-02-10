@@ -112,9 +112,10 @@ class SpecParams(object):
         return cls.fromObject(cls.get_instance(klass), prop_map)
 
     @classmethod
-    def get_ordered_params(cls, objects, keyattr, is_method=False, **kwargs):
+    def get_ordered_params(cls, objects, keyattr, is_method=False, reorder=True, **kwargs):
         """return a sorted dictionary of specparams"""
-        objects = cls.get_sorted_objects(objects, keyattr, is_method)
+        if reorder:
+            objects = cls.get_sorted_objects(objects, keyattr, is_method)
         if is_method:
             data = OrderedDict([(getattr(x, keyattr)(), cls.fromObject(x, **kwargs)) for x in objects])
         else:

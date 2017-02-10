@@ -34,7 +34,7 @@ class ProcessClassOrganizerSpecParams(SpecParams, ProcessClassOrganizerSpec):
         if zenpack:
             p_classes = [x for x in p_classes if x in zenpack.packables()]
 
-        self.process_classes = {x.id: ProcessClassSpecParams.fromObject(x) for x in p_classes}
+        self.process_classes = ProcessClassSpecParams.get_ordered_params(p_classes, 'id')
 
         return self
 
