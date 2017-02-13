@@ -38,6 +38,6 @@ class RRDTemplateSpecParams(SpecParams, RRDTemplateSpec):
 
         self.datasources = RRDDatasourceSpecParams.get_ordered_params(template.datasources(), 'id', reorder=False)
 
-        self.graphs = GraphDefinitionSpecParams.get_ordered_params(template.graphDefs(), 'id', reorder=False)
+        self.graphs = GraphDefinitionSpecParams.get_ordered_params(template.graphDefs(), keyattr='id', sortattr='sequence')
 
         return self

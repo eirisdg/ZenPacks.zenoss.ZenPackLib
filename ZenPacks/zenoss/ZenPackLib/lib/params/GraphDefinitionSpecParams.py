@@ -31,7 +31,7 @@ class GraphDefinitionSpecParams(SpecParams, GraphDefinitionSpec):
 
         datapoint_graphpoints = [x for x in ob.graphPoints() if isinstance(x, DataPointGraphPoint)]
 
-        self.graphpoints = GraphPointSpecParams.get_ordered_params(datapoint_graphpoints, 'id', reorder=False, graphdefinition=ob)
+        self.graphpoints = GraphPointSpecParams.get_ordered_params(datapoint_graphpoints, 'id', sortattr='sequence', graphdefinition=ob)
 
         comment_graphpoints = [x for x in ob.graphPoints() if isinstance(x, CommentGraphPoint)]
         if comment_graphpoints:
