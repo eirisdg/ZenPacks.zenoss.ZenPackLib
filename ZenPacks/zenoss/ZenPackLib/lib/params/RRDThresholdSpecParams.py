@@ -18,10 +18,14 @@ class RRDThresholdSpecParams(SpecParams, RRDThresholdSpec):
 
     @classmethod
     def fromObject(cls, ob):
-        if hasattr(ob, 'isProjection'):
-            delattr(ob, 'isProjection')
         self = super(RRDThresholdSpecParams, cls).fromObject(ob)
         ob = aq_base(ob)
+
+        if hasattr(ob, 'isProjection'):
+            try:
+                delattr(ob, 'isProjection')
+            except:
+                pass
         self.type_ = ob.__class__.__name__
 
         return self
