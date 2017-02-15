@@ -7,6 +7,7 @@
 #
 ##############################################################################
 from Acquisition import aq_base
+from collections import OrderedDict
 from Products.ZenModel.ThresholdGraphPoint import ThresholdGraphPoint
 from ..spec.GraphPointSpec import GraphPointSpec
 from .SpecParams import SpecParams
@@ -26,6 +27,7 @@ class GraphPointSpecParams(SpecParams, GraphPointSpec):
         threshold_graphpoints = [x for x in graphdefinition.graphPoints() if isinstance(x, ThresholdGraphPoint)]
 
         self.includeThresholds = False
+
         if threshold_graphpoints:
             thresholds = {x.id: x for x in ob.graphDef().rrdTemplate().thresholds()}
             for tgp in threshold_graphpoints:
@@ -33,5 +35,20 @@ class GraphPointSpecParams(SpecParams, GraphPointSpec):
                 if threshold:
                     if ob.dpName in threshold.dsnames:
                         self.includeThresholds = True
+
+            # sort by sequence
+            threshold_graphpoints = self.get_sorted_objects(threshold_graphpoints, 'sequence')
+            if self.includeThresholds:
+                legends = OrderedDict()
+                for tgp in threshold_graphpoints:
+                    legends[tgp.id] = OrderedDict()
+                    legends[tgp.id]['threshId'] = tgp.threshId
+                    legend = getattr(tgp, 'legend')
+                    color = getattr(tgp, 'color')
+                    if legend and legend != '${graphPoint/id}':
+                        legends[tgp.id]['legend'] = legend
+                    if color and color != '':
+                        legends[tgp.id]['color'] = color
+                self.thresholdLegends = legends
 
         return self
