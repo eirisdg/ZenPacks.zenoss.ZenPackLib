@@ -32,6 +32,8 @@ class GraphPointSpec(Spec):
             cFunc=None,
             colorindex=None,
             color=None,
+            threshId=None,
+            legend='${graphPoint/id}',
             includeThresholds=False,
             thresholdLegends=None,
             _source_location=None,
@@ -40,7 +42,7 @@ class GraphPointSpec(Spec):
         """
         Create a GraphPoint Specification
 
-            :param dpName: TODO
+            :param dpName: id of RRDDataPoint referenced by this DataPointGraphPoint
             :type dpName: str
             :param lineType: TODO
             :type lineType: str
@@ -50,7 +52,7 @@ class GraphPointSpec(Spec):
             :type stacked: bool
             :param format: TODO
             :type format: str
-            :param legend: TODO
+            :param legend:  Graph legend text for this graph point
             :type legend: str
             :param limit: TODO
             :type limit: int
@@ -62,6 +64,8 @@ class GraphPointSpec(Spec):
             :type color: str
             :param colorindex: TODO
             :type colorindex: int
+            :param threshId: id of RRDThreshold referenced by this ThresholdGraphPoint
+            :type threshId: str
             :param includeThresholds: TODO
             :type includeThresholds: bool
             :param thresholdLegends: map of {thresh_id: {legend: TEXT, color: HEXSTR, threshId: TEXT}
@@ -88,9 +92,15 @@ class GraphPointSpec(Spec):
             self.color = Color(color)
         self.includeThresholds = includeThresholds
         self.thresholdLegends = thresholdLegends
+        self.threshId = threshId
+        # if threshId is given, we assume this is a ThresholdGraphPoint
+        if self.threshId:
+            self.includeThresholds = False
+            self.thresholdLegends = None
 
         # Shorthand for datapoints that have the same name as their datasource.
-        if '_' not in dpName:
+        if len(dpName.split('_')) == 1:
+        # if '_' not in dpName:
             self.dpName = '{0}_{0}'.format(dpName)
         else:
             self.dpName = dpName
@@ -114,7 +124,7 @@ class GraphPointSpec(Spec):
             if lineType.upper() in valid_linetypes:
                 self.lineType = lineType.upper()
             else:
-                raise ValueError("'%s' is not a valid graphpoint lineType. Valid lineTypes: %s" % (
+                raise ValueError("'{}' is not a valid graphpoint lineType. Valid lineTypes: {}".format(
                                  lineType, ', '.join(valid_linetypes)))
 
     @property
