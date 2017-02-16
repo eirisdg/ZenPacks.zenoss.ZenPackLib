@@ -33,7 +33,6 @@ class GraphPointSpec(Spec):
             colorindex=None,
             color=None,
             threshId=None,
-            legend='${graphPoint/id}',
             includeThresholds=False,
             thresholdLegends=None,
             _source_location=None,
@@ -154,7 +153,17 @@ class GraphPointSpec(Spec):
         return [t.name for t in self.template_spec.template_spec.thresholds.values() if self.dpName in t.dsnames]
 
     def create(self, graph_spec, graph, sequence=None):
-        graphpoint = graph.createGraphPoint(DataPointGraphPoint, self.name)
+        # this could be a ThresholdGraphPoint
+        if self.threshId:
+            graphpoint = graph.createGraphPoint(ThresholdGraphPoint, self.name)
+            graphpoint.threshId = self.threshId
+            # check that thresh ID is valid
+            thresh_ids = [t.name for t in self.template_spec.template_spec.thresholds.values()]
+            if self.threshId not in thresh_ids:
+                self.LOG.warn('"{}" is an invalid threshold id'.format(self.threshId))
+        else:
+            graphpoint = graph.createGraphPoint(DataPointGraphPoint, self.name)
+
         self.speclog.debug("adding graphpoint")
 
         graphpoint.dpName = self.dpName
