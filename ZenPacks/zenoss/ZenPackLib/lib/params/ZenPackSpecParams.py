@@ -76,6 +76,10 @@ class ZenPackSpecParams(SpecParams, ZenPackSpec):
         # zproperties
         if all or zproperties:
             self.zProperties = {x[0]: ZPropertySpecParams.fromTuple(x) for x in zp_cls.packZProperties}
+            if hasattr(zp_cls, "packZProperties_data"):
+                for k, v in zp_cls.packZProperties_data.items():
+                    self.zProperties[k].label = v.get('label', '')
+                    self.zProperties[k].description = v.get('description', '')
 
         # classes and class relationships
         self.classes = {}

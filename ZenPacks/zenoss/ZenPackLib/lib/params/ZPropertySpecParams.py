@@ -17,25 +17,6 @@ class ZPropertySpecParams(SpecParams, ZPropertySpec):
         self.name = name
 
     @classmethod
-    def fromObject(cls, id, deviceclass):
-        """Generate SpecParams from example object and list of properties"""
-        self = object.__new__(cls)
-        SpecParams.__init__(self)
-
-        deviceclass = aq_base(deviceclass)
-
-        self.name = id
-#         entry = next((p.get('type', 'string') for p in deviceclass._properties if p['id'] == id), 'string')
-#
-#         self.type_ = entry
-#
-#         self.default = getattr(deviceclass, id)
-#
-#         self.category = getzPropertyCategory(id)
-
-        return self
-
-    @classmethod
     def fromTuple(cls, tuple):
         """Generate SpecParams from tuple entry in ZenPack. packZProperties"""
         self = object.__new__(cls)

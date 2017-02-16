@@ -25,7 +25,6 @@ class RRDDatasourceSpecParams(SpecParams, RRDDatasourceSpec):
         ob = aq_base(ob)
         self.sourcetype = ob.sourcetype
 
-       # self.datapoints = {x.id: RRDDatapointSpecParams.fromObject(x) for x in ob.datapoints()}
         self.datapoints = RRDDatapointSpecParams.get_ordered_params(ob.datapoints(), 'id', reorder=False)
 
         return self

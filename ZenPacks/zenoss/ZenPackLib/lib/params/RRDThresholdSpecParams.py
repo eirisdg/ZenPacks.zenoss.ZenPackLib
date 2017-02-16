@@ -6,9 +6,9 @@
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
+from Acquisition import aq_base
 from .SpecParams import SpecParams
 from ..spec.RRDThresholdSpec import RRDThresholdSpec
-from Acquisition import aq_base
 
 
 class RRDThresholdSpecParams(SpecParams, RRDThresholdSpec):

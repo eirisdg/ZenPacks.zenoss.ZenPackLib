@@ -105,7 +105,6 @@ class SpecParams(object):
 
         return self
 
-
     @classmethod
     def fromClass(cls, klass, prop_map={}):
         """Generate SpecParams from given class"""
